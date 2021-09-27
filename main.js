@@ -1,7 +1,7 @@
 "use strict"
 
 function renderCoffee(coffee) {
-    var html = '<div class="coffee" id=">';
+    let html = '<div class="coffee" id=">';
     html += coffee.id + '"><h5>' + coffee.name + '</h5>';
     html += '<p>' + coffee.roast + '</p>';
     html += '</div>';
@@ -10,8 +10,11 @@ function renderCoffee(coffee) {
 }
 
 function renderCoffees(coffees) {
-    var htmlOdd = '', htmlEven = '';
-    for(var i = 0; i < coffees.length; i++) {
+    if (localStorage.getItem('coffees')) {
+        coffees = JSON.parse(localStorage.getItem('coffees'));
+    }
+    let htmlOdd = '', htmlEven = '';
+    for(let i = 0; i < coffees.length; i++) {
         if (i % 2 === 0) {
             htmlEven += renderCoffee(coffees[i]);
         } else {
@@ -23,9 +26,9 @@ function renderCoffees(coffees) {
 
 function updateCoffees(e) {
     e.preventDefault(); // don't submit the form, we just want to update the data
-    var selectedRoast = roastSelection.value;
-    var coffeeInput = coffeeName.value;
-    var filteredCoffees = [];
+    let selectedRoast = roastSelection.value;
+    let coffeeInput = coffeeName.value;
+    let filteredCoffees = [];
 
     coffees.forEach(function(coffee) {
         if (selectedRoast === "all" && coffeeInput === "") {
@@ -44,8 +47,8 @@ function updateCoffees(e) {
 
 
 function displayCoffeeByName() {
-    var coffeeInput = coffeeName.value;
-    var filteredCoffees = [];
+    let coffeeInput = coffeeName.value;
+    let filteredCoffees = [];
 
     coffees.forEach(function(coffee) {
         if (coffee.name.toLowerCase().includes(coffeeInput.toLowerCase())) {
@@ -57,8 +60,8 @@ function displayCoffeeByName() {
 }
 
 function displayCoffeeByRoast() {
-    var selectedRoast = roastSelection.value;
-    var filteredCoffees = [];
+    let selectedRoast = roastSelection.value;
+    let filteredCoffees = [];
 
     coffees.forEach(function(coffee) {
         if (selectedRoast === "all") {
@@ -73,7 +76,7 @@ function displayCoffeeByRoast() {
 
 // function addNewCoffee(input) {
 //     input.preventDefault(); // don't submit the form, we just want to update the data
-//     var coffeeAdded = {name: coffeeName2.value, roast: roast.value};
+//     let coffeeAdded = {name: coffeeName2.value, roast: roast.value};
 //
 //     coffees.unshift(coffeeAdded);
 //     coffees.slice(1).forEach(function(coffee) {
@@ -85,12 +88,13 @@ function displayCoffeeByRoast() {
 //     coffeeTable.innerHTML = renderCoffees(coffees);
 // }
 
-function addNewCoffee(input) {
-    input.preventDefault(); // don't submit the form, we just want to update the data
-    var coffeeAdded = {name: coffeeName2.value, roast: roast.value};
+function addNewCoffee(event) {
+    event.preventDefault(); // don't submit the form, we just want to update the data
+    let coffeeName = coffeeName2.value.slice(0, 1).toUpperCase() + coffeeName2.value.slice(1).toLowerCase();
+    let coffeeAdded = {id: coffees.length + 1, name: coffeeName, roast: roast.value.toLowerCase()};
 
     function isInList() {
-        for (var i = 0; i < coffees.length; i++) {
+        for (let i = 0; i < coffees.length; i++) {
             if (coffees[i].name.toLowerCase() === coffeeAdded.name.toLowerCase() && coffees[i].roast.toLowerCase() === coffeeAdded.roast.toLowerCase()) {
                 console.log("found it in the list!");
                 return true;
@@ -101,11 +105,14 @@ function addNewCoffee(input) {
     if (!isInList()) {
         coffees.unshift(coffeeAdded);
     }
+
+    localStorage.setItem("coffees",JSON.stringify(coffees));
+
     coffeeTable.innerHTML = renderCoffees(coffees);
 }
 
 // from http://www.ncausa.org/About-Coffee/Coffee-Roasts-Guide
-var coffees = [
+let coffees = [
     {id: 1, name: 'Light City', roast: 'light'},
     {id: 2, name: 'Half City', roast: 'light'},
     {id: 3, name: 'Cinnamon', roast: 'light'},
@@ -122,13 +129,13 @@ var coffees = [
     {id: 14, name: 'French', roast: 'dark'},
 ];
 
-var coffeeTable = document.querySelector('#coffees');
-var submitButton = document.querySelector('#submit');
-var submitButton2 = document.querySelector('#submit2');
-var roastSelection = document.querySelector('#roast-selection');
-var coffeeName = document.querySelector('#coffee-name');
-var coffeeName2 = document.querySelector('#name');
-var roast = document.querySelector('#roast');
+let coffeeTable = document.querySelector('#coffees');
+let submitButton = document.querySelector('#submit');
+let submitButton2 = document.querySelector('#submit2');
+let roastSelection = document.querySelector('#roast-selection');
+let coffeeName = document.querySelector('#coffee-name');
+let coffeeName2 = document.querySelector('#name');
+let roast = document.querySelector('#roast');
 
 coffeeTable.innerHTML = renderCoffees(coffees);
 
